@@ -34,42 +34,42 @@ jobs:
     - name: Run Semgrep and generate SARIF report
       run: |
         # Ensure the artifacts directory exists
-        mkdir -p ./artifacts
+        mkdir -p ${{ github.workspace }}/artifacts
         # Run Semgrep and output the SARIF report to the artifacts directory
-        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=./artifacts/semgrep.sarif /github/workspace
+        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=${{ github.workspace }}/artifacts/semgrep.sarif /github/workspace
 
     # List the contents of the 'artifacts' directory to verify that the Semgrep SARIF report was created
     - name: List contents of artifacts directory after Semgrep
-      run: ls -la ./artifacts
+      run: ls -la ${{ github.workspace }}/artifacts
 
     # Upload the Semgrep SARIF report to GitHub Code Scanning
     - name: Upload Semgrep SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ./artifacts/semgrep.sarif
+        sarif_file: ${{ github.workspace }}/artifacts/semgrep.sarif
 
     # Run Snyk to check for vulnerabilities and generate a SARIF report
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       with:
         command: test
-        args: --sarif-file-output=./artifacts/snyk-results.sarif
+        args: --sarif-file-output=${{ github.workspace }}/artifacts/snyk-results.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     # List the contents of the 'artifacts' directory to verify that the Snyk SARIF report was created
     - name: List contents of artifacts directory after Snyk
-      run: ls -la ./artifacts
+      run: ls -la ${{ github.workspace }}/artifacts
 
     # Upload the Snyk SARIF report to GitHub Code Scanning
     - name: Upload Snyk SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ./artifacts/snyk-results.sarif
+        sarif_file: ${{ github.workspace }}/artifacts/snyk-results.sarif
 
     # Upload all SARIF reports in the 'artifacts' directory to the GitHub Actions artifacts
     - name: Upload SARIF reports to artifacts directory
       uses: actions/upload-artifact@v2
       with:
         name: security-reports
-        path: ./artifacts
+        path: ${{ github.workspace }}/artifacts
