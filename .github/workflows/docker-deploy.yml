@@ -31,8 +31,9 @@ jobs:
         tags: joshgervais/nodegoat:latest
 
     # Run Semgrep for SAST
-    - name: Run Semgrep
-      uses: returntocorp/semgrep-action@v1
+    - name: Run Semgrep and generate SARIF report
+      run: |
+        docker run --rm -v "${{ github.workspace }}:/src" returntocorp/semgrep --config="p/r2c-ci" --sarif --output=semgrep.sarif /src
 
     # Upload Semgrep SARIF report
     - name: Upload Semgrep SARIF to GitHub Code Scanning
