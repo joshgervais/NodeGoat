@@ -29,29 +29,31 @@ jobs:
 
     - name: Run Semgrep and generate SARIF report
       run: |
-        mkdir -p ${{ github.workspace }}/artifacts
-        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=/github/workspace/artifacts/semgrep.sarif /github/workspace
+        # Ensure the artifacts directory exists
+        mkdir -p ${{ github.workspace }}/NodeGoat/artifacts
+        # Run Semgrep and output the SARIF report to the artifacts directory
+        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=/github/workspace/NodeGoat/artifacts/semgrep.sarif /github/workspace
 
     - name: Upload Semgrep SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ${{ github.workspace }}/artifacts/semgrep.sarif
+        sarif_file: ${{ github.workspace }}/NodeGoat/artifacts/semgrep.sarif
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       with:
         command: test
-        args: --sarif-file-output=${{ github.workspace }}/artifacts/snyk-results.sarif
+        args: --sarif-file-output=${{ github.workspace }}/NodeGoat/artifacts/snyk-results.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     - name: Upload Snyk SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ${{ github.workspace }}/artifacts/snyk-results.sarif
+        sarif_file: ${{ github.workspace }}/NodeGoat/artifacts/snyk-results.sarif
 
     - name: Upload SARIF reports to artifacts directory
       uses: actions/upload-artifact@v2
       with:
         name: security-reports
-        path: ${{ github.workspace }}/artifacts/
+        path: ${{ github.workspace }}/NodeGoat/artifacts
