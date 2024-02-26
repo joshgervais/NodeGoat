@@ -8,7 +8,7 @@ on:
 jobs:
   build-push-scan:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -27,35 +27,31 @@ jobs:
         push: true
         tags: joshgervais/nodegoat:latest
 
-    # Ensure the artifacts directory exists
-    - name: Create artifacts directory
-      run: mkdir -p artifacts
-
     - name: Run Semgrep and generate SARIF report
       run: |
+        mkdir -p ${{ github.workspace }}/artifacts
         docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=/github/workspace/artifacts/semgrep.sarif /github/workspace
 
     - name: Upload Semgrep SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: artifacts/semgrep.sarif
+        sarif_file: ${{ github.workspace }}/artifacts/semgrep.sarif
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       with:
         command: test
-        args: --sarif-file-output=artifacts/snyk-results.sarif
+        args: --sarif-file-output=${{ github.workspace }}/artifacts/snyk-results.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     - name: Upload Snyk SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: artifacts/snyk-results.sarif
+        sarif_file: ${{ github.workspace }}/artifacts/snyk-results.sarif
 
-    # Upload SARIF reports as artifacts
-    - name: Upload SARIF reports as artifacts
+    - name: Upload SARIF reports to artifacts directory
       uses: actions/upload-artifact@v2
       with:
         name: security-reports
-        path: artifacts/
+        path: ${{ github.workspace }}/artifacts/
