@@ -39,14 +39,14 @@ jobs:
     - name: Upload Semgrep SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: ${{ github.workspace }}/semgrep.sarif
+        sarif_file: semgrep.sarif
 
     # Run Snyk for SCA
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       with:
         command: test
-        args: --sarif-file-output=${{ github.workspace }}/snyk-results.sarif
+        args: --sarif-file-output=snyk-results.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -54,4 +54,4 @@ jobs:
     - name: Upload Snyk SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: ${{ github.workspace }}/snyk-results.sarif
+        sarif_file: snyk-results.sarif
