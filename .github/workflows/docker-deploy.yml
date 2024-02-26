@@ -10,18 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    # Check out the repository code
     - name: Check out code
       uses: actions/checkout@v2
 
-    # Log in to Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Build and push Docker image
     - name: Build and Push Docker image
       uses: docker/build-push-action@v3
       with:
@@ -30,30 +27,35 @@ jobs:
         push: true
         tags: joshgervais/nodegoat:latest
 
-    # Run Semgrep for SAST
+    # Ensure the artifacts directory exists
+    - name: Create artifacts directory
+      run: mkdir -p artifacts
+
     - name: Run Semgrep and generate SARIF report
       run: |
-        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=/github/workspace/semgrep.sarif /github/workspace
+        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=/github/workspace/artifacts/semgrep.sarif /github/workspace
 
-    # Upload Semgrep SARIF report
     - name: Upload Semgrep SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: semgrep.sarif
+        sarif_file: artifacts/semgrep.sarif
 
-    # Run Snyk for SCA
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       with:
         command: test
-        args: --sarif-file-output=snyk-results.sarif
+        args: --sarif-file-output=artifacts/snyk-results.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-    # Upload Snyk SARIF report
     - name: Upload Snyk SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: snyk-results.sarif
+        sarif_file: artifacts/snyk-results.sarif
 
-
+    # Upload SARIF reports as artifacts
+    - name: Upload SARIF reports as artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: security-reports
+        path: artifacts/
