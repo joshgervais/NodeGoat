@@ -33,7 +33,7 @@ jobs:
     # Run Semgrep for SAST
     - name: Run Semgrep and generate SARIF report
       run: |
-        docker run --rm -v "${{ github.workspace }}:/src" returntocorp/semgrep --config="p/r2c-ci" --sarif --output=semgrep.sarif /src
+        docker run --rm -v "${{ github.workspace }}:/src" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=/src/semgrep.sarif /src
 
     # Upload Semgrep SARIF report
     - name: Upload Semgrep SARIF to GitHub Code Scanning
