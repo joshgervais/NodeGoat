@@ -30,6 +30,12 @@ jobs:
         push: true
         tags: joshgervais/nodegoat:latest
 
+    # Install Semgrep
+    - name: Install Semgrep
+      run: |
+        curl -sSL https://semgrep.dev/install.sh | bash
+        echo "$HOME/.semgrep/bin" >> $GITHUB_PATH
+
     # Run Semgrep to generate a SARIF report and save it in the GitHub workspace
     - name: Run Semgrep and generate SARIF report
       run: |
