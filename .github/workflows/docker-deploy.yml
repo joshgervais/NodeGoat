@@ -7,7 +7,7 @@ on:
 
 jobs:
  build-push-scan:
-    runs-on: ubuntu-latest
+    runs-on: itas276-jgervais
 
     steps:
     # Check out the repository code
@@ -31,7 +31,7 @@ jobs:
         tags: joshgervais/nodegoat:latest
 
  semgrep-sast-scan:
-    runs-on: ubuntu-latest
+    runs-on: itas276-jgervais
     container:
       image: returntocorp/semgrep
 
@@ -52,7 +52,7 @@ jobs:
           path: semgrep-sast.sarif
 
  snyk-scan:
-    runs-on: ubuntu-latest
+    runs-on: itas276-jgervais
     steps:
       - uses: actions/checkout@v2
 
