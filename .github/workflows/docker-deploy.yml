@@ -51,11 +51,11 @@ jobs:
     - name: List contents of artifacts directory after Semgrep
       run: ls -la ./artifacts
 
-    # Upload the Semgrep SARIF report to GitHub Code Scanning
-    - name: Upload Semgrep SARIF to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: ./artifacts/semgrep.sarif
+    # Commented out: Upload the Semgrep SARIF report to GitHub Code Scanning
+    # - name: Upload Semgrep SARIF to GitHub Code Scanning
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: ./artifacts/semgrep.sarif
 
     # Run Snyk to check for vulnerabilities and generate a SARIF report
     - name: Run Snyk to check for vulnerabilities
@@ -70,11 +70,11 @@ jobs:
     - name: List contents of artifacts directory after Snyk
       run: ls -la ./artifacts
 
-    # Upload the Snyk SARIF report to GitHub Code Scanning
-    - name: Upload Snyk SARIF to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: ./artifacts/snyk-results.sarif
+    # Commented out: Upload the Snyk SARIF report to GitHub Code Scanning
+    # - name: Upload Snyk SARIF to GitHub Code Scanning
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: ./artifacts/snyk-results.sarif
 
     # Upload all SARIF reports in the 'artifacts' directory to the GitHub Actions artifacts
     - name: Upload SARIF reports to artifacts directory
