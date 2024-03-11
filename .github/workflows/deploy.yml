@@ -9,7 +9,7 @@ on:
 jobs:
  deploy:
     name: "Deploy to ITAS WMD server"
-    runs-on: wmd-dockerdev
+    runs-on: itas276-jgervais
 
     steps:
       - name: Copy source code files
