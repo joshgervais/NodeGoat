@@ -42,9 +42,9 @@ jobs:
     - name: Run Semgrep and generate SARIF report
       run: |
         # Ensure the artifacts directory exists
-        mkdir -p ./artifacts
+        mkdir -p ${{ github.workspace }}/artifacts
         # Run Semgrep and output the SARIF report to the artifacts directory
-        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=./artifacts/semgrep.sarif /github/workspace
+        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=${{ github.workspace }}/artifacts/semgrep.sarif /github/workspace
 
     # List the contents of the 'artifacts' directory to verify that the Semgrep SARIF report was created
     - name: List contents of artifacts directory after Semgrep
