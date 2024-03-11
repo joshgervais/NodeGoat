@@ -34,7 +34,7 @@ jobs:
     - name: Run Semgrep and generate SARIF report
       run: |
         # Run Semgrep and output the SARIF report to the GitHub workspace
-        docker run --rm -v "${{ github.workspace }}:/github/workspace" returntocorp/semgrep semgrep --config="p/r2c-ci" --sarif --output=${{ github.workspace }}/semgrep.sarif /github/workspace
+        semgrep --config="p/r2c-ci" --sarif --output=${{ github.workspace }}/semgrep.sarif .
 
     # List the contents of the GitHub workspace to verify that the Semgrep SARIF report was created
     - name: List contents of GitHub workspace after Semgrep
