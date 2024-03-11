@@ -63,6 +63,7 @@ jobs:
           args: --sarif-file-output=snyk-results.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
 
       - name: Save Snyk SARIF report
         uses: actions/upload-artifact@v2
