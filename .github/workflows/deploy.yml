@@ -9,7 +9,7 @@ on:
 jobs:
  deploy:
     name: "Deploy to ITAS WMD server"
-    runs-on: itas276-sglencross
+    runs-on: itas276-joshgervais
 
     steps:
       - name: Copy source code files
