@@ -21,37 +21,3 @@ jobs:
           embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           embed-description: "The deployment workflow has started."
           embed-author-name: "${{ github.triggering_actor }}"
-
-  # Deploy to ITAS WMD server
-  deploy:
-    name: "Deploy to ITAS WMD server"
-    runs-on: itas276-jgervais
-
-    steps:
-      # Check out the repository code
-      - name: Copy source code files
-        uses: actions/checkout@v2
-
-      # Test if files are visible
-      - name: Test files are visible
-        run: |
-          whoami
-          ls -lah
-
-      # Build and run Docker containers
-      - name: Build and run Docker containers
-        run: |
-          docker-compose up --build -d
-
-      # Post a message to Discord when the deployment is complete
-      - name: Discord Notification
-        if: always()
-        uses: tsickert/discord-webhook@v5.3.0
-        with:
-          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          username: ${{ github.repository }}
-          avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
-          embed-title: "Deployment completed"
-          embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          embed-description: "The deployment to ITAS WMD server has completed."
-          embed-author-name: "${{ github.triggering_actor }}"
