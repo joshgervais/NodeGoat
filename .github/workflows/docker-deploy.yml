@@ -59,17 +59,12 @@ jobs:
           --metrics=off \
           --config="p/r2c-ci"
 
-      # Save Semgrep SARIF report
-      - name: Save Semgrep SARIF report
+      # Upload Semgrep SARIF report as an artifact
+      - name: Upload Semgrep SARIF report
         uses: actions/upload-artifact@v2
         with:
           name: semgrep-sast.sarif
           path: semgrep-sast.sarif
-
-      # Get the download URL for the Semgrep SARIF report
-      - name: Get Semgrep SARIF report download URL
-        id: semgrep-sarif-url
-        run: echo "::set-output name=url::${{ steps.upload-artifact.outputs.browser_download_url }}"
 
       # Post a message to Discord when the Semgrep SAST scan completes
       - name: Discord Notification - Semgrep SAST
@@ -81,7 +76,7 @@ jobs:
           avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
           embed-title: "Semgrep SAST scan completed"
           embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          embed-description: "The Semgrep SAST scan has completed. Download the SARIF report: ${{ steps.semgrep-sarif-url.outputs.url }}"
+          embed-description: "The Semgrep SAST scan has completed. Download the SARIF report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts"
           embed-author-name: "${{ github.triggering_actor }}"
 
   snyk-scan:
@@ -99,17 +94,12 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true
 
-      # Save Snyk SARIF report
-      - name: Save Snyk SARIF report
+      # Upload Snyk SARIF report as an artifact
+      - name: Upload Snyk SARIF report
         uses: actions/upload-artifact@v2
         with:
           name: snyk-sca.sarif
           path: snyk-results.sarif
-
-      # Get the download URL for the Snyk SARIF report
-      - name: Get Snyk SARIF report download URL
-        id: snyk-sarif-url
-        run: echo "::set-output name=url::${{ steps.upload-artifact.outputs.browser_download_url }}"
 
       # Post a message to Discord when the Snyk scan completes
       - name: Discord Notification - Snyk Scan
@@ -121,5 +111,5 @@ jobs:
           avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
           embed-title: "Snyk scan completed"
           embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          embed-description: "The Snyk scan has completed. Download the SARIF report: ${{ steps.snyk-sarif-url.outputs.url }}"
+          embed-description: "The Snyk scan has completed. Download the SARIF report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts"
           embed-author-name: "${{ github.triggering_actor }}"
