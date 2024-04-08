@@ -76,7 +76,7 @@ jobs:
           avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
           embed-title: "Semgrep SAST scan completed"
           embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          embed-description: "The Semgrep SAST scan has completed. Download the SARIF report: ${{ steps.upload-artifact.outputs.browser_download_url }}"
+          embed-description: "The Semgrep SAST scan has completed. Download the SARIF report: ${{ steps.upload-semgrep-sarif.outputs.browser_download_url }}"
           embed-author-name: "${{ github.triggering_actor }}"
 
   snyk-scan:
@@ -111,5 +111,5 @@ jobs:
           avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
           embed-title: "Snyk scan completed"
           embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          embed-description: "The Snyk scan has completed. Download the SARIF report: ${{ steps.upload-artifact.outputs.browser_download_url }}"
+          embed-description: "The Snyk scan has completed. Download the SARIF report: ${{ steps.upload-snyk-sarif.outputs.browser_download_url }}"
           embed-author-name: "${{ github.triggering_actor }}"
