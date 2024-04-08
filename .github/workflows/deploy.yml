@@ -1,4 +1,4 @@
-name: Build docker image and deploy to WMD docker servers
+name: Build docker image
 
 on:
   push:
@@ -17,7 +17,35 @@ jobs:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           username: ${{ github.repository }}
           avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
-          embed-title: "Deployment workflow started"
+          embed-title: "Build workflow started"
           embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          embed-description: "The deployment workflow has started."
+          embed-description: "The build workflow has started."
+          embed-author-name: "${{ github.triggering_actor }}"
+
+  # Build Docker image
+  build:
+    name: "Build Docker image"
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository code
+      - name: Copy source code files
+        uses: actions/checkout@v2
+
+      # Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t my-image .
+
+      # Post a message to Discord when the build is complete
+      - name: Discord Notification
+        if: always()
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          username: ${{ github.repository }}
+          avatar-url: https://gravatar.com/avatar/be5d3fe06696117c467f199ddb4f1aed?s=400&d=robohash&r=g
+          embed-title: "Build completed"
+          embed-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          embed-description: "The Docker image build has completed."
           embed-author-name: "${{ github.triggering_actor }}"
